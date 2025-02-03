@@ -1,0 +1,123 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Staging model for orders, standardizing and filtering raw order data."
+    columns:
+      - name: order_id
+        description: "Unique identifier for the order."
+        tests:
+          - not_null
+          - unique
+      - name: created_at
+        description: "Timestamp when the order was placed."
+        tests:
+          - not_null
+      - name: product_item_supplier_batch_id
+        description: "Foreign key linking to the product batch from which the order was fulfilled."
+      - name: location_id
+        description: "Foreign key linking to the fridge (location) where the order was placed."
+      - name: amount
+        description: "Quantity of product purchased in the order."
+
+  - name: stg_product_item_supplier_batches
+    description: "Staging model for product batches, including production and expiry dates."
+    columns:
+      - name: product_item_supplier_batch_id
+        description: "Unique identifier for the product batch."
+        tests:
+          - not_null
+          - unique
+      - name: production_date
+        description: "Date when the batch of the product was produced."
+      - name: expiry_date
+        description: "Expiration date of the batch of product."
+      - name: product_id
+        description: "Foreign key referencing the product."
+      - name: shelf_life_days
+        description: "Number of days from production date to expiry date."
+
+  - name: stg_products
+    description: "Staging model for products, containing product metadata and food category."
+    columns:
+      - name: product_id
+        description: "Unique identifier for the product."
+        tests:
+          - not_null
+          - unique
+      - name: product_name
+        description: "Name of the product."
+      - name: shelf_life_days
+        description: "Shelf life of the product in days."
+      - name: food_category_name
+        description: "Category of the product (e.g., Drinks, Snacks)."
+
+  - name: stg_inventory_transitions
+    description: "Staging model for inventory transitions tracking stock movements."
+    columns:
+      - name: inventory_transition_id
+        description: "Unique identifier for the inventory transition."
+        tests:
+          - not_null
+          - unique
+      - name: amount
+        description: "Quantity of product moved in this transition."
+        tests:
+          - not_null
+      - name: product_item_supplier_batch_id
+        description: "Foreign key linking to the product batch."
+      - name: from_inventory_stage_id
+        description: "Previous stage of the inventory item."
+      - name: to_inventory_stage_id
+        description: "New stage of the inventory item."
+      - name: created_at
+        description: "Timestamp when the transition occurred."
+        tests:
+          - not_null
+
+  - name: stg_inventory_counts
+    description: "Staging model for inventory counts recorded at fridge locations."
+    columns:
+      - name: inventory_count_id
+        description: "Unique identifier for the inventory count event."
+        tests:
+          - not_null
+          - unique
+      - name: amount
+        description: "Quantity of product recorded in the count."
+        tests:
+          - not_null
+      - name: created_at
+        description: "Timestamp when the count was recorded."
+        tests:
+          - not_null
+      - name: product_item_supplier_batch_id
+        description: "Foreign key linking to the product batch."
+      - name: inventory_stage_id
+        description: "Foreign key linking to the inventory stage."
+
+  - name: stg_inventory_stages
+    description: "Staging model for inventory stages, tracking the status of inventory items."
+    columns:
+      - name: inventory_stage_id
+        description: "Unique identifier for the inventory stage."
+        tests:
+          - not_null
+          - unique
+      - name: discriminator
+        description: "Type of inventory stage (e.g., Sale, Donation, Waste)."
+      - name: delivery_batch_id
+        description: "Identifier for the delivery batch related to this stage."
+      - name: location_id
+        description: "Foreign key linking to the fridge location."
+
+  - name: stg_locations
+    description: "Staging model for fridge locations where inventory is stored."
+    columns:
+      - name: location_id
+        description: "Unique identifier for the fridge location."
+        tests:
+          - not_null
+          - unique
+      - name: location_name
+        description: "Name of the fridge location."
