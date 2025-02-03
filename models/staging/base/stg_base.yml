@@ -49,7 +49,7 @@ models:
         description: "Name of the product."
       - name: shelf_life_days
         description: "Shelf life of the product in days."
-      - name: food_category_name
+      - name: food_category
         description: "Category of the product (e.g., Drinks, Snacks)."
 
   - name: stg_inventory_transitions
