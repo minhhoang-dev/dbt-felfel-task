@@ -4,11 +4,15 @@ models:
   - name: stg_orders
     description: "Staging model for orders, standardizing and filtering raw order data."
     columns:
+      - name: primary_key
+        description: "Primary key for the order (combination of order_id, pisb_id, and location_id)."
+        tests:
+          - not_null
+          - unique  
       - name: order_id
         description: "Unique identifier for the order."
         tests:
           - not_null
-          - unique
       - name: created_at
         description: "Timestamp when the order was placed."
         tests:
@@ -49,7 +53,7 @@ models:
         description: "Name of the product."
       - name: shelf_life_days
         description: "Shelf life of the product in days."
-      - name: food_category_name
+      - name: food_category
         description: "Category of the product (e.g., Drinks, Snacks)."
 
   - name: stg_inventory_transitions
