@@ -48,15 +48,15 @@ locations as (
 final as (
     select 
         ic.inventory_count_id,
+        pb.product_id,
+        ic.inventory_stage_id,
+        ist.location_id,
         ic.created_at,
         ic.amount,
         ic.product_item_supplier_batch_id,
-        pb.product_id,
         p.product_name,
         p.food_category,
-        ic.inventory_stage_id,
         ist.discriminator as inventory_stage,
-        ist.location_id,
         l.location_name
     from inventory_counts ic
     left join product_batches pb 
@@ -68,6 +68,11 @@ final as (
     left join locations l 
         on ist.location_id = l.location_id
 )
+
+--- Decisions and Reasoning
+    ---- Tracks inventory corrections manually recorded by drivers.
+    ---- Joins with dim_inventory_stages and dim_locations to get stage and location details.
+    ---- Uses created_at for incremental processing for better performance.
 
 select * from final 
 

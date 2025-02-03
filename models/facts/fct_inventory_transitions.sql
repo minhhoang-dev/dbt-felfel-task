@@ -50,17 +50,17 @@ locations as (
 final as (
     select 
         it.inventory_transition_id,
+        fis.location_id,
+        it.from_inventory_stage_id,
+        it.to_inventory_stage_id,
         it.created_at,
         it.amount,
         it.product_item_supplier_batch_id,
         pb.product_id,
         p.product_name,
         p.food_category,
-        it.from_inventory_stage_id,
         fis.discriminator as from_stage,
-        it.to_inventory_stage_id,
         tis.discriminator as to_stage,
-        fis.location_id,
         l.location_name
     from inventory_transitions it
     left join product_batches pb 
@@ -75,6 +75,10 @@ final as (
         on fis.location_id = l.location_id
 )
 
+--- Decision and Reasoning
+    --- Tracks inventory movements (Sales, Donation, Waste) using from_stage and to_stage.
+    --- Joins with dim_inventory_stages to determine fridge location.
+    --- Uses created_at for incremental processing for efficient data loading.
 
 select * from final
 
