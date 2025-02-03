@@ -4,11 +4,15 @@ models:
   - name: stg_orders
     description: "Staging model for orders, standardizing and filtering raw order data."
     columns:
+      - name: primary_key
+        description: "Primary key for the order (combination of order_id, pisb_id, and location_id)."
+        tests:
+          - not_null
+          - unique  
       - name: order_id
         description: "Unique identifier for the order."
         tests:
           - not_null
-          - unique
       - name: created_at
         description: "Timestamp when the order was placed."
         tests:
