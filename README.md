@@ -29,7 +29,7 @@ This repository contains a **dbt-based ELT pipeline** for processing FELFEL frid
 
 ### Dimensional Models (`dim_*`)
 **Purpose:** Enriches and denormalizes data for analytical queries.
-- `dim_products` → Product details & shelf life categories.
+- `dim_products` → Product details
 - `dim_locations` → Fridge location details.
 - `dim_inventory_stages` → Inventory lifecycle tracking.
 - `dim_product_batches` → Product batch metadata.
