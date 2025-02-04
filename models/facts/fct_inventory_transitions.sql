@@ -1,10 +1,3 @@
-{{
-    config(
-        materialized='incremental',
-        primary_key='inventory_transition_id'
-    )
-}}
-
 with inventory_transitions as (
     select
         inventory_transition_id,
@@ -61,18 +54,21 @@ final as (
         p.food_category,
         fis.discriminator as from_stage,
         tis.discriminator as to_stage,
-        l.location_name
+        l1.location_name as from_location_name,
+        l2.location_name as to_location_name
     from inventory_transitions it
     left join product_batches pb 
         on it.product_item_supplier_batch_id = pb.product_item_supplier_batch_id
     left join products p 
         on pb.product_id = p.product_id
-    left join inventory_stages fis 
+    left join inventory_stages fis
         on it.from_inventory_stage_id = fis.inventory_stage_id
     left join inventory_stages tis 
         on it.to_inventory_stage_id = tis.inventory_stage_id
-    left join locations l 
-        on fis.location_id = l.location_id
+    left join locations l1
+        on fis.location_id = l1.location_id
+    left join locations l2
+        on tis.location_id = l2.location_id
 )
 
 --- Decision and Reasoning
@@ -81,7 +77,3 @@ final as (
     --- Uses created_at for incremental processing for efficient data loading.
 
 select * from final
-
-{% if is_incremental() %}
-    where created_at > (select max(created_at) from {{ this }})  -- Incremental load
-{% endif %}

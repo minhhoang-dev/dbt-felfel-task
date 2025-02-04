@@ -1,14 +1,8 @@
-{{ 
-    config(
-        materialized='incremental', 
-        unique_key='inventory_count_id'
-    ) 
-}}
-
 with inventory_counts as (
     select
         inventory_count_id,
         amount,
+        comment,
         created_at,
         product_item_supplier_batch_id,
         inventory_stage_id
@@ -56,6 +50,7 @@ final as (
         ic.product_item_supplier_batch_id,
         p.product_name,
         p.food_category,
+        ic.comment,
         ist.discriminator as inventory_stage,
         l.location_name
     from inventory_counts ic
@@ -75,7 +70,3 @@ final as (
     ---- Uses created_at for incremental processing for better performance.
 
 select * from final 
-
-{% if is_incremental() %}
-    where created_at > (select max(created_at) from {{ this }})  -- Incremental load
-{% endif %}
