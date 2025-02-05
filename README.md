@@ -54,7 +54,7 @@ This repository contains a **dbt-based ELT pipeline** for processing FELFEL frid
 ## Data Architecture (Task 3)
 ### Goal: Enable querying fridge inventory at a specific time (`t`).
 
-### Proposed Solution
+### Proposed (Future) Solution
 1. **Materialized Inventory Snapshot (`inventory_snapshot`)**
    - Stores stock levels per **product, location, and timestamp**.
    - Updated incrementally.
