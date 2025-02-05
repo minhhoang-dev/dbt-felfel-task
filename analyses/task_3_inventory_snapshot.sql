@@ -2,7 +2,8 @@ select
     location_name,
     product_name,
     event_at,
-    current_stock
+    --last_transition_type, -- if this info is relevant
+    current_stock,
 from {{ ref('fct_inventory_events') }}
 where event_at <= '2024-10-08'
     --- and location_name = '' --- if you want to filter by location_name
