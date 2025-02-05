@@ -17,19 +17,13 @@ base as (
     order by location_name, product_name, event_at desc
 ),
 
-aggregated as (
-    select
-        *
-    from base
-    where rn = 1
-),
-
 final as (
     select
         location_name,
         product_name,
         sum(current_stock) as current_stock
-    from aggregated
+    from base
+    where rn = 1
     group by 1, 2
     order by location_name, product_name
 )
